@@ -1,0 +1,37 @@
+name: Build Android APK
+ 
+on:
+  push:
+    branches: [ "main", "master" ]
+  workflow_dispatch:
+ 
+jobs:
+  build:
+    runs-on: ubuntu-latest
+ 
+    steps:
+      - name: Скачивание кода
+        uses: actions/checkout@v4
+ 
+      - name: Установка Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'zulu'
+          java-version: '17'
+ 
+      - name: Установка Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+ 
+      - name: Загрузка зависимостей
+        run: flutter pub get
+ 
+      - name: Сборка APK файла
+        run: flutter build apk --release
+ 
+      - name: Сохранение готового APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-release-apk
+          path: build/app/outputs/flutter-apk/app-release.apk
